@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dmm.framework.dmm.main.modules.test.dao.UserInfoDao">
+    
+	<sql id="userInfoColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.age AS "age",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.delete_date AS "deleteDate",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="userInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="UserInfo">
+		SELECT 
+			<include refid="userInfoColumns"/>
+		FROM t_biz_user a
+		<include refid="userInfoJoins"/>
+		WHERE a.id = #{id} and a.del_flag = 0
+	</select>
+	
+	<select id="findList" resultType="UserInfo">
+		SELECT 
+			<include refid="userInfoColumns"/>
+		FROM t_biz_user a
+		<include refid="userInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserInfo">
+		SELECT 
+			<include refid="userInfoColumns"/>
+		FROM t_biz_user a
+		<include refid="userInfoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	
+	<insert id="insert">
+		INSERT INTO t_biz_user
+		 <trim prefix="(" suffix=")" suffixOverrides="," >
+ 				<if test="id != null">
+					id,
+				</if>
+				<if test="name != null">
+					name,
+				</if>
+				<if test="age != null">
+					age,
+				</if>
+				<if test="createDate != null">
+					create_date,
+				</if>
+				<if test="updateDate != null">
+					update_date,
+				</if>
+				<if test="deleteDate != null">
+					delete_date,
+				</if>
+				<if test="delFlag != null">
+					del_flag,
+				</if>
+		 </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+				<if test="id != null">
+					#{id},
+				</if>
+				<if test="name != null">
+					#{name},
+				</if>
+				<if test="age != null">
+					#{age},
+				</if>
+				<if test="createDate != null">
+					#{createDate},
+				</if>
+				<if test="updateDate != null">
+					#{updateDate},
+				</if>
+				<if test="deleteDate != null">
+					#{deleteDate},
+				</if>
+				<if test="delFlag != null">
+					#{delFlag},
+				</if>
+		 </trim>
+	</insert>
+	
+	<update id="update">
+		UPDATE t_biz_user 
+		 <set>
+			<if test="name != null">
+				name = #{name},
+			</if>
+			<if test="age != null">
+				age = #{age},
+			</if>
+			<if test="updateDate != null">
+				update_date = #{updateDate},
+			</if>
+			<if test="deleteDate != null">
+				delete_date = #{deleteDate},
+			</if>
+			<if test="delFlag != null">
+				del_flag = #{delFlag},
+			</if>
+ 		</set>
+		WHERE id = #{id}
+	</update>
+	
+	
+	<update id="delete">
+		UPDATE t_biz_user SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
